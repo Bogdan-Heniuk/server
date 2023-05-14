@@ -99,10 +99,7 @@ class Vacancy {
         name,
         creator,
         shortDescription,
-        detailedDescription: {
-          ...detailedDescription,
-          raw: JSON.stringify(detailedDescription.raw),
-        },
+        detailedDescription,
         salaryRange,
         experience,
         specialty,
@@ -117,7 +114,7 @@ class Vacancy {
 
   async update(id, payload) {
     try {
-      const updated = await CompanyModel.findByIdAndUpdate(id, payload);
+      const updated = await VacancyModel.findByIdAndUpdate(id, payload);
       return updated;
     } catch (e) {
       console.log("Failed to update vacancy", e);
