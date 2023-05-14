@@ -18,6 +18,7 @@ class Vacancy {
     try {
       const filter = req.body || {};
       const user = req.user;
+      filter.creator = {$ne: user._id}
       const vacancies = await VacancyService.getByFitler(filter, user);
       res.json(vacancies);
     } catch (e) {

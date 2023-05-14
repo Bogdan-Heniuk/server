@@ -9,7 +9,7 @@ import VacancyViews from "../db/models/vacancyViews.js";
 class Vacancy {
   async getByFitler(filter, user = null) {
     try {
-      const vacancies = await VacancyModel.find({...filter, creator: {$ne: user?._id}})
+      const vacancies = await VacancyModel.find({...filter})
         .populate(POPULATED_FIELDS)
         .lean();
 
