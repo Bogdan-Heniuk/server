@@ -4,7 +4,10 @@ const vacancySchema = new mongoose.Schema(
   {
     name: { type: "string", required: true },
     shortDescription: { type: String, required: true },
-    detailedDescription: { type: String, required: true },
+    detailedDescription: { 
+      html: { type: String, required: true },
+      raw: { type: String, required: true },
+     },
     salaryRange: {
       min: Number,
       max: Number,

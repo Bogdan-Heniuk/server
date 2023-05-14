@@ -9,7 +9,7 @@ import VacancyViews from "../db/models/vacancyViews.js";
 class Vacancy {
   async getByFitler(filter, user = null) {
     try {
-      const vacancies = await VacancyModel.find({...filter})
+      const vacancies = await VacancyModel.find({ ...filter })
         .populate(POPULATED_FIELDS)
         .lean();
 
@@ -21,7 +21,7 @@ class Vacancy {
               candidate: user._id,
             })
           );
-          vacancy.isAlreadyApplied = isAlreadyApplied
+          vacancy.isAlreadyApplied = isAlreadyApplied;
         }
       }
 
@@ -99,7 +99,10 @@ class Vacancy {
         name,
         creator,
         shortDescription,
-        detailedDescription,
+        detailedDescription: {
+          ...detailedDescription,
+          raw: JSON.stringify(detailedDescription.raw),
+        },
         salaryRange,
         experience,
         specialty,
@@ -122,7 +125,7 @@ class Vacancy {
     }
   }
 
-  async apply({vacancyId, candidateId, cv, coverLetter}) {
+  async apply({ vacancyId, candidateId, cv, coverLetter }) {
     try {
       const isAlreadyApplied = await AppliesModel.findOne({
         candidate: candidateId,
