@@ -3,7 +3,9 @@ export const Roles = {
   Candidate: "Candidate",
 };
 
-export const POPULATED_FIELDS = ["company", "creator"];
+export const VACANCY_POPULATED_FIELDS = ["company", "creator"];
+export const CHAT_POPULATED_FIELDS = ["recruiter", "candidate", "vacancy"];
+export const MESSAGE_POPULATED_FIELDS = ["user"];
 
 export const EnglishLevel = {
   NoEnlgish: "No English",

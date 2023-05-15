@@ -4,13 +4,14 @@ import { transporter } from "./nodemailer.js";
 import VacancyApplies from "../db/models/vacancyApplies.js";
 import { BadRequest } from "../common/errors.js";
 import CompanyModel from "../db/models/company.js";
-import { POPULATED_FIELDS, Roles } from "../common/enums.js";
+import { VACANCY_POPULATED_FIELDS, Roles } from "../common/enums.js";
 import VacancyViews from "../db/models/vacancyViews.js";
+import ChatService from "./chat.js";
 class Vacancy {
   async getByFitler(filter, user = null) {
     try {
       const vacancies = await VacancyModel.find({ ...filter })
-        .populate(POPULATED_FIELDS)
+        .populate(VACANCY_POPULATED_FIELDS)
         .lean();
 
       if (user && user.role === Roles.Candidate) {
@@ -35,7 +36,7 @@ class Vacancy {
   async getById(vacancyId, candidate) {
     try {
       const vacancy = await VacancyModel.findById(vacancyId).populate(
-        POPULATED_FIELDS
+        VACANCY_POPULATED_FIELDS
       );
 
       const vacancyToObject = vacancy.toObject();
@@ -161,6 +162,17 @@ class Vacancy {
       await AppliesModel.create({
         candidate: candidateId,
         vacancy: vacancyId,
+      });
+
+      const newChat = await ChatService.createChat({
+        candidateId,
+        recruiterId: vacancy.creator._id,
+        vacancyId: vacancy._id,
+      });
+      await ChatService.sendMessage({
+        userId: candidateId,
+        chatId: newChat._id,
+        message: coverLetter,
       });
     } catch (e) {
       console.log("Failed to apply on vacancy", e);
