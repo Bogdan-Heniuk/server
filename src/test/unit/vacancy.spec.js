@@ -44,8 +44,8 @@ describe("Vacancy Controller", () => {
     })
 
     afterAll(async () => {
-        // const db = mongoose.connection.db                // удаление из базы не заботает
-        // await db.dropDatabase()                          // удаление из базы не заботает
+        const db = mongoose.connection.db                // удаление из базы не заботает
+        await db.dropDatabase()                          // удаление из базы не заботает
 
         await mongoose.connection.close()
         await server.close()
@@ -101,7 +101,7 @@ describe("Vacancy Controller", () => {
                 shortDescription: "Updated Looking for a frontend developer",
                 detailedDescription: "Updated test description",
             })
-        console.log('response.body::', response)
+        // console.log('response.body::', response)
         expect(response.status).toBe(200);
         expect(response.request._data.name).toBe("Updated Frontend Developer");
         expect(response.request._data.shortDescription).toBe("Updated Looking for a frontend developer");
