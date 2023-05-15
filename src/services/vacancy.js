@@ -7,6 +7,7 @@ import CompanyModel from "../db/models/company.js";
 import { VACANCY_POPULATED_FIELDS, Roles } from "../common/enums.js";
 import VacancyViews from "../db/models/vacancyViews.js";
 import ChatService from "./chat.js";
+import UserModel from "../db/models/user.js";
 class Vacancy {
   async getByFitler(filter, user = null) {
     try {
@@ -22,6 +23,15 @@ class Vacancy {
               candidate: user._id,
             })
           );
+
+          const isAlreadyViewed = Boolean(
+            await VacancyViews.findOne({
+              vacancy: vacancy._id,
+              candidate: user._id,
+            })
+          );
+
+          vacancy.isAlreadyViewed = isAlreadyViewed
           vacancy.isAlreadyApplied = isAlreadyApplied;
         }
       }
@@ -138,17 +148,26 @@ class Vacancy {
         "creator"
       );
 
+      const userInfo = await UserModel.findOne({ _id: candidateId });
+
+      let attachments = {
+        filename: cv?.originalname,
+        content: cv?.buffer,
+      };
+
+      if (!cv) {
+        attachments = {
+          filename: userInfo.cv?.fileName,
+          path: userInfo.cv?.location,
+        };
+      }
+
       const mailOptions = {
         from: "bohdantest330@gmail.com",
         to: vacancy.creator.email,
         subject: `Новий відгук від Profound! ${vacancy.name}`,
         text: coverLetter,
-        attachments: [
-          {
-            filename: cv.originalname,
-            content: cv.buffer,
-          },
-        ],
+        attachments: [attachments],
       };
 
       await transporter.sendMail(mailOptions, function (error, info) {
@@ -169,11 +188,13 @@ class Vacancy {
         recruiterId: vacancy.creator._id,
         vacancyId: vacancy._id,
       });
+
       await ChatService.sendMessage({
         userId: candidateId,
         chatId: newChat._id,
         message: coverLetter,
       });
+
     } catch (e) {
       console.log("Failed to apply on vacancy", e);
       throw e;
