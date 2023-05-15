@@ -18,6 +18,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.332.0",
+    "@aws-sdk/util-base64-browser": "^3.209.0",
+    "@aws-sdk/util-body-length-browser": "^3.310.0",
+    "@aws-sdk/util-user-agent-browser": "^3.329.0",
     "@types/jest": "^29.5.1",
     "aws-sdk": "^2.1374.0",
     "bcrypt": "^5.1.0",
